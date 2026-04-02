@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intro to Robotics — Part 3 Study Notes</title>
+<style>
+  :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--accent:#58a6ff;--accent2:#bc8cff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#e3b341;--teal:#39d353;--pink:#db61a2;--cyan:#79c0ff;--text:#c9d1d9;--muted:#8b949e;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:2rem 1rem;}
+  .container{max-width:1000px;margin:0 auto;}
+  .page-header{text-align:center;padding:2.5rem 2rem;background:linear-gradient(135deg,#161b22,#0d1117);border:1px solid var(--border);border-radius:16px;margin-bottom:2rem;}
+  .page-header h1{font-size:2rem;color:var(--accent);}
+  .page-header p{color:var(--muted);margin-top:.5rem;}
+  .modules{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;}
+  .mod-badge{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.25rem .7rem;font-size:.78rem;color:var(--muted);}
+  .toc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:2rem;}
+  .toc h2{font-size:.85rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:1rem;}
+  .toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .5rem;}
+  .toc a{color:var(--accent);text-decoration:none;font-size:.92rem;}
+  .toc a:hover{text-decoration:underline;}
+  @media(max-width:600px){.toc-grid{grid-template-columns:1fr;}}
+  .section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.8rem;margin-bottom:1.5rem;}
+  .section-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.4rem;}
+  .snum{background:var(--accent);color:#000;font-size:.75rem;font-weight:800;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  h2{font-size:1.2rem;color:#fff;}
+  h3{font-size:1rem;color:var(--accent2);margin:1.2rem 0 .5rem;}
+  h4{font-size:.9rem;color:var(--orange);margin:.9rem 0 .3rem;}
+  p{margin-bottom:.7rem;}
+  .box{border-radius:8px;padding:.9rem 1.2rem;margin:.8rem 0;border-left:4px solid;}
+  .box-blue{background:#1c2a3a;border-color:var(--accent);}
+  .box-purple{background:#1e1a30;border-color:var(--accent2);}
+  .box-green{background:#102316;border-color:var(--green);}
+  .box-yellow{background:#231c0a;border-color:var(--yellow);}
+  .box-red{background:#200d0d;border-color:var(--red);}
+  .box-orange{background:#22180a;border-color:var(--orange);}
+  .box-cyan{background:#0d1f2a;border-color:var(--cyan);}
+  .box-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:.4rem;}
+  .box-blue .box-title{color:var(--accent);}
+  .box-purple .box-title{color:var(--accent2);}
+  .box-green .box-title{color:var(--green);}
+  .box-yellow .box-title{color:var(--yellow);}
+  .box-red .box-title{color:var(--red);}
+  .box-orange .box-title{color:var(--orange);}
+  .box-cyan .box-title{color:var(--cyan);}
+  .formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.2rem;font-family:'Consolas','Courier New',monospace;font-size:.92rem;color:var(--green);margin:.7rem 0;line-height:2.1;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:.1em .4em;font-family:'Consolas',monospace;font-size:.84em;color:var(--orange);}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;margin:.7rem 0;}
+  pre code{background:none;border:none;padding:0;font-size:.87rem;color:var(--teal);}
+  table.ct{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.88rem;}
+  table.ct th{background:var(--surface2);padding:.6rem .9rem;text-align:left;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+  table.ct td{padding:.55rem .9rem;border-top:1px solid var(--border);vertical-align:top;}
+  table.ct tr:hover td{background:var(--surface2);}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin:.8rem 0;}
+  .cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem;margin:.8rem 0;}
+  @media(max-width:640px){.cols,.cols3{grid-template-columns:1fr;}}
+  ul.plain{padding-left:1.4rem;}
+  ul.plain li{margin:.3rem 0;}
+  ul.check{list-style:none;padding-left:.3rem;}
+  ul.check li::before{content:"✓ ";color:var(--green);font-weight:800;}
+  ul.check li{margin:.3rem 0;}
+  ol.steps{padding-left:1.4rem;}
+  ol.steps li{margin:.4rem 0;}
+  .pill{display:inline-block;padding:.15em .6em;border-radius:99px;font-size:.74rem;font-weight:700;margin:.1em .15em;}
+  .pill-blue{background:#1c2a3a;color:var(--accent);border:1px solid var(--accent);}
+  .pill-green{background:#102316;color:var(--green);border:1px solid var(--green);}
+  .pill-red{background:#200d0d;color:var(--red);border:1px solid var(--red);}
+  .pill-yellow{background:#231c0a;color:var(--yellow);border:1px solid var(--yellow);}
+  .pill-purple{background:#1e1a30;color:var(--accent2);border:1px solid var(--accent2);}
+  .badge{font-size:.7rem;font-weight:700;padding:.2em .6em;border-radius:4px;margin-left:.4rem;}
+  .badge-exam{background:var(--red);color:#fff;}
+  .badge-lab{background:var(--green);color:#000;}
+  em{color:var(--yellow);font-style:normal;font-weight:600;}
+  strong{color:#fff;}
+  hr.div{border:none;border-top:1px solid var(--border);margin:1rem 0;}
+  .callout{display:flex;gap:.7rem;align-items:flex-start;background:var(--surface2);border-radius:8px;padding:.8rem 1rem;margin:.7rem 0;}
+  .callout-icon{font-size:1.1rem;flex-shrink:0;line-height:1.7;}
+  /* BT node visual */
+  .bt-node{display:inline-flex;align-items:center;justify-content:center;border:2px solid;border-radius:6px;padding:.25rem .7rem;font-size:.8rem;font-weight:700;margin:.2rem;}
+  .bt-seq{border-color:var(--accent);color:var(--accent);}
+  .bt-sel{border-color:var(--yellow);color:var(--yellow);}
+  .bt-par{border-color:var(--green);color:var(--green);}
+  .bt-dec{border-color:var(--accent2);color:var(--accent2);}
+  .bt-leaf{border-color:var(--muted);color:var(--muted);}
+  .bt-row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.5rem 0;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="page-header">
+  <h1>Introduction to Robotics — Part 3</h1>
+  <p>Path Planning · Behavior Trees · Inverse Kinematics · Final Project</p>
+  <div class="modules">
+    <div class="mod-badge">M1: Why Planning?</div>
+    <div class="mod-badge">M2: Graph Search (BFS → Dijkstra → A*)</div>
+    <div class="mod-badge">M3: Sampling-Based Planning (RRT)</div>
+    <div class="mod-badge">M4: Behavior Trees</div>
+    <div class="mod-badge">M5: Kinematics & Final Project</div>
+  </div>
+</div>
+
+<div class="toc">
+  <h2>Contents</h2>
+  <div class="toc-grid">
+    <a href="#s1">1. Why Planning?</a>
+    <a href="#s2">2. Graphs & Data Structures</a>
+    <a href="#s3">3. BFS & DFS — Traversal</a>
+    <a href="#s4">4. Shortest Path with BFS</a>
+    <a href="#s5">5. Dijkstra's Algorithm</a>
+    <a href="#s6">6. A* Algorithm</a>
+    <a href="#s7">7. Grid Maps as Graphs</a>
+    <a href="#s8">8. Sampling-Based Planning (RRT)</a>
+    <a href="#s9">9. RRT* &amp; C-FOREST Improvements</a>
+    <a href="#s10">10. Collision Checking</a>
+    <a href="#s11">11. FSM Limitations → Behavior Trees</a>
+    <a href="#s12">12. BT Node Types Reference</a>
+    <a href="#s13">13. Blackboards, Decorators &amp; Tick Model</a>
+    <a href="#s14">14. Arm Forward Kinematics</a>
+    <a href="#s15">15. Inverse Kinematics</a>
+    <a href="#s16">16. Final Project: TiagoLite Pick &amp; Place</a>
+  </div>
+</div>
+
+<!-- S1 -->
+<div class="section" id="s1">
+  <div class="section-header"><div class="snum">1</div><h2>Why Planning? <span class="badge badge-exam">Exam Core</span></h2></div>
+  <div class="box box-red">
+    <div class="box-title">Three Failures of Pure Feedback Control</div>
+    <ol class="steps">
+      <li><strong>Deadlock:</strong> opposing behaviors (collision avoidance vs. goal-following) cancel out → robot stuck forever</li>
+      <li><strong>Non-optimal paths:</strong> no guarantee the feedback path is shortest or even reasonable</li>
+      <li><strong>Unknown arrival time:</strong> can't predict when (or whether) the robot will reach the goal</li>
+    </ol>
+  </div>
+  <h3>The Multi-Layer Architecture</h3>
+  <table class="ct">
+    <tr><th>Layer</th><th>Representation</th><th>Algorithm</th></tr>
+    <tr><td><strong>High-level (global)</strong></td><td>Topological map (Google Maps, building floor plan)</td><td>Graph search: A*, Dijkstra</td></tr>
+    <tr><td><strong>Mid-level (local)</strong></td><td>Grid C-space of local environment</td><td>A* on grid, RRT</td></tr>
+    <tr><td><strong>Low-level (execution)</strong></td><td>Waypoints generated by planner</td><td>P/PID feedback controller (Part 2)</td></tr>
+  </table>
+  <p>Planning produces <em>waypoints</em>. Feedback control <em>drives to them</em>. The two work together — planning is upstream.</p>
+  <div class="box box-blue">
+    <div class="box-title">Cost Function</div>
+    Edge cost can be anything: distance, time, energy, number of turns, smoothness. All reduce to a shortest-path problem on a weighted graph. You choose what "cost" means for your application.
+  </div>
+</div>
+
+<!-- S2 -->
+<div class="section" id="s2">
+  <div class="section-header"><div class="snum">2</div><h2>Graphs &amp; Data Structures</h2></div>
+  <p>A graph = collection of <em>nodes</em> (vertices) + <em>edges</em> (arcs). In a <em>directed graph</em>, edges have direction — A→B does not imply B→A.</p>
+  <h3>Python Dictionary Representation</h3>
+  <pre><code># Directed graph: node → list of reachable neighbors
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D'],
+    'C': ['A'],
+    'D': ['B']
+}
+
+# With edge costs: node → list of (cost, neighbor) tuples
+graph_weighted = {
+    'A': [(5, 'B'), (3, 'C')],
+    'B': [(2, 'D'), (1, 'E')],
+    'C': [(3, 'F')],
+}
+for cost, neighbor in graph_weighted['A']:
+    print(f"  → {neighbor} (cost {cost})")</code></pre>
+
+  <h3>Key Data Structures for Graph Search</h3>
+  <table class="ct">
+    <tr><th>Structure</th><th>Order</th><th>Python Op</th><th>Used For</th></tr>
+    <tr><td><strong>Queue (FIFO)</strong></td><td>First-In, First-Out</td><td><code>q.pop(0)</code></td><td>BFS — broad exploration</td></tr>
+    <tr><td><strong>Stack (LIFO)</strong></td><td>Last-In, First-Out</td><td><code>q.pop()</code></td><td>DFS — deep exploration</td></tr>
+    <tr><td><strong>Min-Heap / Priority Queue</strong></td><td>Sorted by cost (lowest first)</td><td><code>heapq.heappop(q)</code></td><td>Dijkstra, A* — weighted graphs</td></tr>
+    <tr><td><strong>Set (visited)</strong></td><td>Hash — O(1) lookup</td><td><code>x in visited</code></td><td>All search algorithms — check if already visited</td></tr>
+    <tr><td><strong>Dict (parent)</strong></td><td>Key→value</td><td><code>parent[u] = v</code></td><td>Reconstruct shortest path by backtracking</td></tr>
+    <tr><td><strong>DefaultDict (distances)</strong></td><td>Key→value, default=∞</td><td><code>from collections import defaultdict</code></td><td>Dijkstra — initialize all distances to infinity</td></tr>
+  </table>
+  <div class="callout">
+    <div class="callout-icon">💡</div>
+    <div><strong>Memory trick:</strong> Q is broad → use Queue for BFS. Stack is deep → use Stack for DFS.</div>
+  </div>
+</div>
+
+<!-- S3 -->
+<div class="section" id="s3">
+  <div class="section-header"><div class="snum">3</div><h2>BFS &amp; DFS — Graph Traversal <span class="badge badge-exam">Exam Core</span></h2></div>
+  <div class="cols">
+    <div class="box box-blue">
+      <div class="box-title">Breadth-First Search (BFS)</div>
+      Explore all neighbors at current depth before going deeper. Uses FIFO queue. <em>Guarantees shortest path</em> in unweighted graphs (first time you reach a node = shortest path). Visit order: A, B, C, D, E, F
+    </div>
+    <div class="box box-orange">
+      <div class="box-title">Depth-First Search (DFS)</div>
+      Dive deep before backtracking. Uses LIFO stack. Does NOT guarantee shortest path — first path found is just some path. Must explore all paths to find shortest. Visit order: A, B, D, E, F, C
+    </div>
+  </div>
+  <h3>BFS Implementation</h3>
+  <pre><code>from collections import deque
+
+def bfs(graph, start, goal):
+    queue   = deque([start])
+    visited = {start}
+    parent  = {}
+
+    while queue:
+        v = queue.popleft()           # FIFO — pop from left
+        if v == goal:
+            break
+        for u in graph[v]:
+            if u not in visited:
+                visited.add(u)
+                parent[u] = v
+                queue.append(u)       # add to right
+
+    # Reconstruct path
+    path = []
+    key = goal
+    while key in parent:
+        path.insert(0, key)
+        key = parent[key]
+    path.insert(0, start)
+    return path
+
+# DFS: only change is queue.pop() instead of queue.popleft()</code></pre>
+
+  <div class="box box-yellow">
+    <div class="box-title">⚠ BFS vs DFS — When to Use Each</div>
+    Use <strong>BFS</strong> when you need the shortest path in an unweighted graph (uniform edge costs). Use <strong>DFS</strong> for cycle detection, connectivity checks, or when any path is sufficient. In robotics: BFS is usually the right choice for 4-neighborhood grid maps.
+  </div>
+</div>
+
+<!-- S4 -->
+<div class="section" id="s4">
+  <div class="section-header"><div class="snum">4</div><h2>Shortest Path with BFS + Parent Tracking</h2></div>
+  <p>BFS guarantees optimality: the <em>first time</em> you reach the goal through BFS, you've found the shortest path. Track the parent of each node to reconstruct it.</p>
+  <pre><code># After BFS completes, backtrack through parent dict:
+path = []
+key = goal
+while key in parent:
+    path.insert(0, key)   # insert at left = reverse the backtrack
+    key = parent[key]
+path.insert(0, start)
+print(path)  # e.g. ['A', 'C', 'F']</code></pre>
+  <div class="callout">
+    <div class="callout-icon">📌</div>
+    <div>The <code>parent</code> dict stores each node's predecessor on the shortest path. The start node has no parent. Backtracking from goal → start via <code>parent</code> gives the path in reverse.</div>
+  </div>
+  <h3>BFS Only Works for Uniform Edge Costs</h3>
+  <p>In a 4-neighborhood grid all edges cost 1 → BFS is optimal. Add diagonals (cost √2) or arbitrary edge weights → BFS fails. You need <strong>Dijkstra's</strong>.</p>
+</div>
+
+<!-- S5 -->
+<div class="section" id="s5">
+  <div class="section-header"><div class="snum">5</div><h2>Dijkstra's Algorithm <span class="badge badge-exam">Exam Core</span></h2></div>
+  <div class="box box-blue">
+    <div class="box-title">Core Idea</div>
+    BFS with a min-heap (priority queue) sorted by cumulative cost from start. Always process the node with the <em>lowest cost so far</em>. Explores a "wavefront" expanding from start in all directions.
+  </div>
+  <h3>Algorithm Steps</h3>
+  <ol class="steps">
+    <li>Initialize: distances[start] = 0, all others = ∞. Heap = [(0, start)].</li>
+    <li>Pop node v with lowest cost from heap.</li>
+    <li>Add v to visited set.</li>
+    <li>For each neighbor u of v (not yet visited):<br>new_cost = distances[v] + edge_cost(v→u)<br>If new_cost &lt; distances[u]: update distances[u], set parent[u]=v, push (new_cost, u) to heap.</li>
+    <li>Repeat until goal is popped or heap is empty.</li>
+  </ol>
+  <pre><code>import heapq
+from collections import defaultdict
+
+def dijkstra(graph, start, goal):
+    distances = defaultdict(lambda: float('inf'))
+    distances[start] = 0
+    heap    = [(0, start)]
+    visited = set()
+    parent  = {}
+
+    while heap:
+        cost, v = heapq.heappop(heap)
+        if v in visited:
+            continue
+        visited.add(v)              # add when POPPED, not when discovered
+        if v == goal:
+            break
+        for edge_cost, u in graph[v]:
+            new_cost = cost + edge_cost
+            if new_cost < distances[u]:
+                distances[u] = new_cost
+                parent[u] = v
+                heapq.heappush(heap, (new_cost, u))
+
+    # Reconstruct path same as BFS
+    path = []; key = goal
+    while key in parent: path.insert(0, key); key = parent[key]
+    path.insert(0, start)
+    return path</code></pre>
+
+  <div class="box box-red">
+    <div class="box-title">⚠ Critical Bug: When to Add to Visited</div>
+    Add node to <code>visited</code> when it is <strong>popped from the heap</strong>, not when it is first discovered/pushed. Adding on discovery causes nodes to be marked visited before finding a cheaper path to them, leading to incorrect results.
+  </div>
+
+  <h3>Heap Tuple Ordering</h3>
+  <p><code>heapq</code> sorts tuples by the first element. Store <code>(cost, node)</code> — heap always pops the lowest-cost node first. Use <code>heapq.heappush</code> to maintain sorted order.</p>
+</div>
+
+<!-- S6 -->
+<div class="section" id="s6">
+  <div class="section-header"><div class="snum">6</div><h2>A* Algorithm <span class="badge badge-exam">Exam Core</span></h2></div>
+  <div class="box box-green">
+    <div class="box-title">A* = Dijkstra + Heuristic</div>
+    Dijkstra explores in all directions (wavefront). A* uses a <em>heuristic estimate</em> of remaining cost to goal, prioritizing nodes that are likely closer to the goal. Much faster in practice.
+  </div>
+  <h3>The One-Line Change from Dijkstra</h3>
+  <div class="formula">
+    Priority = actual_cost_from_start + heuristic_estimate_to_goal<br><br>
+    f(n) = g(n) + h(n)
+  </div>
+  <ul class="plain">
+    <li><strong>g(n)</strong> = actual cost from start to node n (same as Dijkstra)</li>
+    <li><strong>h(n)</strong> = heuristic estimate from n to goal (added only to heap priority)</li>
+    <li><strong>f(n)</strong> = total priority</li>
+  </ul>
+  <h3>Common Heuristics</h3>
+  <table class="ct">
+    <tr><th>Heuristic</th><th>Formula</th><th>Best For</th></tr>
+    <tr><td><strong>Manhattan distance</strong></td><td>|x_goal − x| + |y_goal − y|</td><td>4-neighborhood grids (no diagonals)</td></tr>
+    <tr><td><strong>Euclidean distance</strong></td><td>√((x_goal−x)² + (y_goal−y)²)</td><td>Continuous space, 8-neighborhood</td></tr>
+    <tr><td><strong>Diagonal distance</strong></td><td>max(|Δx|, |Δy|)</td><td>8-neighborhood grids</td></tr>
+  </table>
+  <pre><code>def heuristic(node, goal):
+    return abs(node[0] - goal[0]) + abs(node[1] - goal[1])  # Manhattan
+
+def a_star(graph_or_get_neighbors, start, goal):
+    distances = defaultdict(lambda: float('inf'))
+    distances[start] = 0
+    heap    = [(0 + heuristic(start, goal), 0, start)]  # (f, g, node)
+    visited = set()
+    parent  = {}
+
+    while heap:
+        f, g, v = heapq.heappop(heap)
+        if v in visited: continue
+        visited.add(v)
+        if v == goal: break
+        for edge_cost, u in get_neighbors(v):     # or graph[v]
+            new_g = g + edge_cost
+            if new_g < distances[u]:
+                distances[u] = new_g
+                parent[u] = v
+                heapq.heappush(heap, (new_g + heuristic(u, goal), new_g, u))</code></pre>
+
+  <div class="callout">
+    <div class="callout-icon">💡</div>
+    <div>The heuristic is added to the heap priority <em>only</em> — it does NOT change the actual distance stored. The stored distance <code>g(n)</code> remains the true cost from start. This is the key to A*'s correctness.</div>
+  </div>
+  <h3>Why A* is Faster Than Dijkstra</h3>
+  <p>Dijkstra explores a disc expanding equally in all directions. A* explores an ellipse-shaped frontier biased toward the goal — skipping large areas that would never yield a shorter path. In practice it can be orders of magnitude faster.</p>
+</div>
+
+<!-- S7 -->
+<div class="section" id="s7">
+  <div class="section-header"><div class="snum">7</div><h2>Grid Maps as Graphs — get_neighbors</h2></div>
+  <p>Instead of pre-populating a graph dictionary, generate neighbors on-the-fly from a 2D map array using a <code>get_neighbors</code> function. Node labels = (row, col) tuples.</p>
+  <pre><code># Map: 0 = free, 1 = obstacle (or float probability)
+map_grid = [
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0]
+]
+
+DELTA_4 = [(0, 1), (0, -1), (1, 0), (-1, 0)]         # 4-neighborhood
+DELTA_8 = [(0,1),(0,-1),(1,0),(-1,0),(1,1),(1,-1),(-1,1),(-1,-1)]  # 8
+
+def get_neighbors(node, map_grid, delta=DELTA_4, threshold=0.3):
+    neighbors = []
+    for d in delta:
+        cand = (node[0] + d[0], node[1] + d[1])
+        rows = len(map_grid)
+        cols = len(map_grid[0])
+        if 0 <= cand[0] < rows and 0 <= cand[1] < cols:
+            if map_grid[cand[0]][cand[1]] < threshold:  # navigable
+                cost = 1.0 if d in DELTA_4 else 1.414   # √2 for diagonal
+                neighbors.append((cost, cand))
+    return neighbors</code></pre>
+
+  <div class="box box-yellow">
+    <div class="box-title">⚠ 8-Neighborhood Requires Weighted Search</div>
+    Adding diagonals violates the BFS assumption of uniform edge costs (diagonal = √2 ≠ 1). Treat all edges as equal → incorrect shortest path. Must use <strong>Dijkstra or A*</strong> for 8-neighborhood or any non-uniform costs.
+  </div>
+  <h3>Generalizing get_neighbors</h3>
+  <p>This approach works for any discrete search problem — not just 2D grids:</p>
+  <ul class="plain">
+    <li>Chess knight: delta = [(2,1),(2,-1),(-2,1),(-2,-1),(1,2),(1,-2),(-1,2),(-1,-2)]</li>
+    <li>15-puzzle: neighbors = valid tile swap configurations</li>
+    <li>6-DOF robot arm: neighbors = joint configurations reachable with small Δθ</li>
+  </ul>
+</div>
+
+<!-- S8 -->
+<div class="section" id="s8">
+  <div class="section-header"><div class="snum">8</div><h2>Sampling-Based Planning (RRT) <span class="badge badge-exam">Exam Core</span></h2></div>
+  <div class="box box-blue">
+    <div class="box-title">Why Sampling?</div>
+    Grid search becomes infeasible in high dimensions. A 6-DOF arm = 6D search space. Searching every grid cell of a 6D space is computationally impossible. Sampling explores a sparse subset of configurations, making high-dimensional planning tractable.
+  </div>
+  <h3>RRT Algorithm (Rapidly-Exploring Random Tree)</h3>
+  <div class="formula">
+    Inputs: C (config space), q_start, q_goal, K (max vertices), Δq (step size)<br>
+    Output: Graph G usable by A*
+  </div>
+  <ol class="steps">
+    <li>Initialize G with only q_start</li>
+    <li>Sample q_rand randomly from C (occasionally set q_rand = q_goal with probability p)</li>
+    <li>Find q_near = nearest node in G to q_rand (Euclidean distance)</li>
+    <li>Step Δq from q_near toward q_rand → q_new</li>
+    <li>If edge q_near → q_new is collision-free: add q_new and edge to G</li>
+    <li>If q_new is within Δq of q_goal: set q_new = q_goal, done</li>
+    <li>Repeat until goal found or k = K</li>
+  </ol>
+  <pre><code>import numpy as np
+
+def rrt(start, goal, max_vertices=2000, delta_q=15, p_goal=0.1):
+    graph = {start: []}        # adjacency list
+    parent = {start: None}
+
+    for _ in range(max_vertices):
+        # Sample (biased toward goal)
+        q_rand = goal if np.random.rand() < p_goal else (
+            np.random.uniform(0, MAP_W),
+            np.random.uniform(0, MAP_H))
+
+        # Find nearest node in graph
+        q_near = min(graph.keys(), key=lambda n: euclidean(n, q_rand))
+
+        # Step toward q_rand
+        d = euclidean(q_near, q_rand)
+        if d < delta_q:
+            q_new = q_rand
+        else:
+            direction = ((q_rand[0]-q_near[0])/d, (q_rand[1]-q_near[1])/d)
+            q_new = (q_near[0] + direction[0]*delta_q,
+                     q_near[1] + direction[1]*delta_q)
+
+        if collision_free(q_near, q_new):
+            graph[q_new] = [q_near]
+            graph[q_near].append(q_new)
+            parent[q_new] = q_near
+            if euclidean(q_new, goal) < delta_q:
+                return graph, parent  # goal found!
+    return graph, parent</code></pre>
+
+  <h3>RRT Properties</h3>
+  <table class="ct">
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td><strong>Completeness</strong></td><td>Probabilistically complete — will find a path if one exists (given enough samples)</td></tr>
+    <tr><td><strong>Optimality</strong></td><td>NOT optimal — path found is feasible but often far from shortest</td></tr>
+    <tr><td><strong>Δq too large</strong></td><td>Always hits obstacles; exploration is too coarse</td></tr>
+    <tr><td><strong>Δq too small</strong></td><td>Algorithm is slow; very fine exploration</td></tr>
+    <tr><td><strong>Goal bias p</strong></td><td>5–10% works well — balances exploration vs. exploitation</td></tr>
+    <tr><td><strong>After finding path</strong></td><td>Run A* on the RRT graph for shortest path within that graph</td></tr>
+  </table>
+</div>
+
+<!-- S9 -->
+<div class="section" id="s9">
+  <div class="section-header"><div class="snum">9</div><h2>RRT* &amp; C-FOREST Improvements</h2></div>
+  <div class="cols">
+    <div class="box box-green">
+      <div class="box-title">RRT* — Better Paths (Optimality)</div>
+      Instead of connecting q_new to q_near (nearest), search a d-ball (circle in 2D, sphere in higher D) around q_new for the node that gives the lowest cost to start. Creates a tree that's more directed toward start → smoother, more optimal paths. Also rewires existing edges as search progresses (doesn't stop once goal found).
+    </div>
+    <div class="box box-purple">
+      <div class="box-title">C-FOREST — Speed (Parallelism)</div>
+      Once an initial path is found, all future samples need only be drawn from an ellipsoid around start+goal (sum of distances to both focal points = path length). Any point outside this ellipse cannot improve the path. Enables parallel search across multiple CPU cores — each core limits its search to the current-best ellipsoid.
+    </div>
+  </div>
+  <div class="callout">
+    <div class="callout-icon">💡</div>
+    <div>RRT always returns a usable path, but post-processes are needed to straighten/optimize it. In practice, you keep running RRT* to improve the solution, then apply trajectory optimization (not covered in this course).</div>
+  </div>
+</div>
+
+<!-- S10 -->
+<div class="section" id="s10">
+  <div class="section-header"><div class="snum">10</div><h2>Collision Checking</h2></div>
+  <div class="cols">
+    <div class="box box-blue">
+      <div class="box-title">Grid Map: Bresenham's Line</div>
+      Draw a line from q_near to q_new using Bresenham's algorithm. Check every grid cell the line passes through — if any is occupied, the edge is in collision. Same algorithm from Part 2 mapping module.
+    </div>
+    <div class="box box-purple">
+      <div class="box-title">3D / Complex Robots: Physics Engine</div>
+      Load robot URDF into PyBullet or ODE. Place robot at q_new in the simulator. Query engine: "does this robot collide with any object?" If yes → discard edge. This handles arbitrary 3D geometry without manual math.
+    </div>
+  </div>
+  <h3>URDF (Universal Robot Description File)</h3>
+  <p>An XML file describing a robot's geometry, joints, and collision meshes. Export from Webots by right-clicking the robot. Libraries like <strong>IKPy</strong> and <strong>PyBullet</strong> load URDFs directly to perform kinematics and collision checking.</p>
+  <div class="box box-yellow">
+    <div class="box-title">Grid Planning vs. Sampling Planning — Collision Checking Difference</div>
+    <strong>Grid-based:</strong> compute C-space first (grow all obstacles), then search only free cells — no collision checking during search.<br>
+    <strong>RRT:</strong> sample first, then check each edge for collision — checking happens per edge, not pre-computed.
+  </div>
+</div>
+
+<!-- S11 -->
+<div class="section" id="s11">
+  <div class="section-header"><div class="snum">11</div><h2>FSM Limitations → Behavior Trees <span class="badge badge-exam">Exam Core</span></h2></div>
+  <h3>Why FSMs Break Down</h3>
+  <ul class="plain">
+    <li>N states → up to N² transitions (combinatorial explosion)</li>
+    <li>Adding a state requires modifying many existing transitions</li>
+    <li>State transitions use complex conditions (sensor thresholds, counters) — hard to read and debug</li>
+    <li>States are hard to reuse — they encode application-specific transitions</li>
+    <li>Failure handling is an afterthought — you add it when the robot breaks</li>
+  </ul>
+  <h3>Extended FSM (XFSM) — First Attempt</h3>
+  <p>Add <em>actions</em> on state transitions (e.g., counter++) alongside <em>guard conditions</em> (e.g., counter == N). Helps, but state explosion still occurs.</p>
+  <h3>Behavior Trees — What They Are</h3>
+  <div class="box box-green">
+    <div class="box-title">Key Insight</div>
+    Every behavior node has <em>exactly two outcomes</em>: <strong>SUCCESS</strong> or <strong>FAILURE</strong> (plus <strong>RUNNING</strong> in real-time). This constraint forces clean interfaces and makes behaviors easily composable. Other people can use your node without knowing its internals.
+  </div>
+  <h3>BT vs FSM Comparison</h3>
+  <table class="ct">
+    <tr><th></th><th>Finite State Machine</th><th>Behavior Tree</th></tr>
+    <tr><td><strong>Transitions</strong></td><td>Arbitrary conditions (sensor values, strings, etc.)</td><td>Only SUCCESS/FAILURE</td></tr>
+    <tr><td><strong>N states → transitions</strong></td><td>Up to N²</td><td>Implicit in tree structure</td></tr>
+    <tr><td><strong>Adding a state</strong></td><td>Must edit neighboring states' transitions</td><td>Insert node in tree — no other changes</td></tr>
+    <tr><td><strong>Failure handling</strong></td><td>Added reactively when robot breaks</td><td>Forced upfront by FAIL outcome</td></tr>
+    <tr><td><strong>Reusability</strong></td><td>Poor — transitions encode application logic</td><td>Good — clean SUCCESS/FAIL interface</td></tr>
+    <tr><td><strong>Industry adoption</strong></td><td>Simple robots, early systems</td><td>AAA games (Unreal Engine 5+), industrial robots</td></tr>
+  </table>
+</div>
+
+<!-- S12 -->
+<div class="section" id="s12">
+  <div class="section-header"><div class="snum">12</div><h2>BT Node Types Reference <span class="badge badge-exam">Exam Core</span></h2></div>
+
+  <h3>Composite Nodes</h3>
+  <table class="ct">
+    <tr><th>Node</th><th>Symbol</th><th>Behavior</th><th>Returns</th></tr>
+    <tr>
+      <td><strong>Sequence</strong></td>
+      <td><span class="bt-node bt-seq">→</span></td>
+      <td>Execute children L→R. Stop and return FAIL at first failure.</td>
+      <td>SUCCESS if ALL succeed; FAILURE if any fails</td>
+    </tr>
+    <tr>
+      <td><strong>Selector (Fallback)</strong></td>
+      <td><span class="bt-node bt-sel">?</span></td>
+      <td>Execute children L→R. Stop and return SUCCESS at first success.</td>
+      <td>SUCCESS if any succeeds; FAILURE if ALL fail</td>
+    </tr>
+    <tr>
+      <td><strong>Parallel</strong></td>
+      <td><span class="bt-node bt-par">⇉</span></td>
+      <td>Execute ALL children simultaneously.</td>
+      <td>Varies by library: often SUCCESS if all succeed; FAIL if any fails</td>
+    </tr>
+  </table>
+
+  <h3>Leaf Nodes</h3>
+  <ul class="plain">
+    <li><strong>Action/Behavior</strong> — executes a robot action (move, grasp, turn). Returns SUCCESS, FAILURE, or RUNNING.</li>
+    <li><strong>Condition</strong> — checks a state (is peg in gripper? is light visible?). Returns SUCCESS or FAILURE immediately.</li>
+  </ul>
+
+  <h3>Examples: Sequence vs. Selector</h3>
+  <div class="cols">
+    <div>
+      <p><strong>Sequence: "Insert Square Peg"</strong></p>
+      <div class="bt-row">
+        <span class="bt-node bt-seq">→ Insert Peg</span>
+      </div>
+      <div class="bt-row" style="padding-left:1rem;">
+        <span class="bt-node bt-leaf">Move Over Hole</span>
+        <span class="bt-node bt-leaf">Rotate Aligned</span>
+        <span class="bt-node bt-leaf">Move Down</span>
+      </div>
+      <p style="font-size:.85rem;color:var(--muted);">All three must succeed in order. Any failure → whole sequence fails.</p>
+    </div>
+    <div>
+      <p><strong>Selector: "Pick Square Peg"</strong></p>
+      <div class="bt-row">
+        <span class="bt-node bt-sel">? Pick Peg</span>
+      </div>
+      <div class="bt-row" style="padding-left:1rem;">
+        <span class="bt-node bt-leaf">Sense Peg in Gripper</span>
+        <span class="bt-node bt-seq">→ Get Peg</span>
+      </div>
+      <p style="font-size:.85rem;color:var(--muted);">First checks if peg already held. Only if that fails does it execute "Get Peg" sequence.</p>
+    </div>
+  </div>
+
+  <h3>Light-Following BT Example</h3>
+  <div class="bt-row">
+    <span class="bt-node bt-dec">↻ Repeat</span> →
+    <span class="bt-node bt-sel">? Move To Light</span>
+  </div>
+  <div class="bt-row" style="padding-left:2rem;">
+    <span class="bt-node bt-leaf">Under Light?</span>
+    <span class="bt-node bt-leaf">Follow Light</span>
+    <span class="bt-node bt-leaf">Avoid Obstacle</span>
+    <span class="bt-node bt-leaf">Follow Wall</span>
+  </div>
+  <p style="font-size:.85rem;color:var(--muted);">Selector tries each left to right. If under light → done. If not → follow light. If stuck → avoid. If U-obstacle → follow wall. Repeat decorator loops forever.</p>
+</div>
+
+<!-- S13 -->
+<div class="section" id="s13">
+  <div class="section-header"><div class="snum">13</div><h2>Blackboards, Decorators &amp; Tick Model</h2></div>
+
+  <h3>Decorators</h3>
+  <table class="ct">
+    <tr><th>Decorator</th><th>Effect</th></tr>
+    <tr><td><strong>Repeat</strong></td><td>Execute child forever (while True loop)</td></tr>
+    <tr><td><strong>Repeat N times</strong></td><td>Execute child N times then return SUCCESS</td></tr>
+    <tr><td><strong>Inverter</strong></td><td>Flip outcome: SUCCESS→FAILURE, FAILURE→SUCCESS</td></tr>
+    <tr><td><strong>Running→Success</strong></td><td>Treat RUNNING as SUCCESS — useful for composing with selectors</td></tr>
+  </table>
+
+  <h3>Blackboard — Shared Memory</h3>
+  <pre><code>class Blackboard:
+    def __init__(self):
+        self.data = {}
+    def write(self, key, value):
+        self.data[key] = value
+    def read(self, key):
+        return self.data.get(key)
+
+# Simplest implementation: just a dict
+bb = {}
+bb['peg_location'] = (0.5, 0.3, 0.1)
+
+# Nodes read/write via blackboard — no direct coupling between them</code></pre>
+  <p>Blackboards decouple nodes. A "scan scene" node writes object locations; a "pick object" node reads them. Neither needs to know the other exists.</p>
+
+  <h3>Tick Model — Real-Time Execution</h3>
+  <div class="box box-blue">
+    <div class="box-title">Three Return States in Real-Time BTs</div>
+    <strong>SUCCESS</strong> — action completed<br>
+    <strong>FAILURE</strong> — action failed<br>
+    <strong>RUNNING</strong> — action in progress, call tick again next timestep
+  </div>
+  <p>A <em>tick</em> = one call to the BT (e.g., every 32ms like robot.step()). On each tick, the BT continues from where it left off. Nodes return RUNNING while waiting for a motor to finish, a sensor to confirm, etc.</p>
+  <h3>pyTrees Library</h3>
+  <pre><code>import py_trees
+
+class MoveToWaypoint(py_trees.behaviour.Behaviour):
+    def __init__(self, waypoint):
+        super().__init__(name="Move To Waypoint")
+        self.waypoint = waypoint
+
+    def setup(self):    pass          # called once on startup
+    def initialise(self): pass        # called each time node becomes active
+    def update(self):                 # called each tick
+        if at_waypoint(self.waypoint):
+            return py_trees.common.Status.SUCCESS
+        move_toward(self.waypoint)
+        return py_trees.common.Status.RUNNING
+    def terminate(self, new_status): pass   # cleanup
+
+# Build tree
+root = py_trees.composites.Sequence(name="Navigate", memory=True)
+root.add_children([MoveToWaypoint(wp) for wp in waypoints])
+py_trees.display.render_dot_tree(root)   # visualize tree</code></pre>
+</div>
+
+<!-- S14 -->
+<div class="section" id="s14">
+  <div class="section-header"><div class="snum">14</div><h2>Arm Forward Kinematics <span class="badge badge-exam">Exam Core</span></h2></div>
+  <div class="box box-blue">
+    <div class="box-title">Holonomic vs Non-Holonomic — The Key Difference</div>
+    <strong>Robot arm (holonomic):</strong> joint angles fully define end-effector pose at all times. Return wheels to (0,0) → robot returns to start. Configuration space maps 1:1 to Cartesian space.<br>
+    <strong>Differential drive (non-holonomic):</strong> wheel angles do NOT uniquely determine world pose. Must integrate velocities.
+  </div>
+  <h3>2-Link Arm Forward Kinematics</h3>
+  <div class="formula">
+    x = l₁·cos(α) + l₂·cos(α+β)<br>
+    y = l₁·sin(α) + l₂·sin(α+β)<br>
+    θ = α + β
+  </div>
+  <p>Where α = joint 1 angle, β = joint 2 angle, l₁, l₂ = link lengths.</p>
+  <h3>Via Homogeneous Transform Multiplication</h3>
+  <div class="formula">
+    T₀→₂ = T₀→₁ · T₁→₂<br><br>
+    T₀→₁ = | cos α  -sin α  0  l₁cos α |<br>
+            | sin α   cos α  0  l₁sin α |<br>
+            |   0       0    1     0     |<br>
+            |   0       0    0     1     |
+  </div>
+  <p>Multiply the two transforms: rotation by α + translation l₁, then rotation by β + translation l₂. Result = combined transform with x, y from FK formulas above.</p>
+  <h3>Denavit-Hartenberg (DH) Parameters</h3>
+  <p>A systematic convention for defining transforms between consecutive joints. Four parameters per joint:</p>
+  <table class="ct">
+    <tr><th>Parameter</th><th>Description</th></tr>
+    <tr><td><strong>Link length (a)</strong></td><td>Distance between Z-axes of consecutive joints</td></tr>
+    <tr><td><strong>Link twist (α)</strong></td><td>Angle between Z-axes (about X-axis)</td></tr>
+    <tr><td><strong>Link offset (d)</strong></td><td>Translation along Z-axis between consecutive joints</td></tr>
+    <tr><td><strong>Joint angle (θ)</strong></td><td>Rotation about Z-axis (the variable for revolute joints)</td></tr>
+  </table>
+  <p>DH parameters are available in robot manuals (e.g., Universal Robots UR5). Fill them into 4 standard matrices → multiply together → full forward kinematics. Libraries like <strong>IKPy</strong> read URDF and handle this automatically.</p>
+</div>
+
+<!-- S15 -->
+<div class="section" id="s15">
+  <div class="section-header"><div class="snum">15</div><h2>Inverse Kinematics (IK)</h2></div>
+  <div class="box box-red">
+    <div class="box-title">IK Is Hard</div>
+    Forward kinematics: joints → Cartesian (straightforward). Inverse kinematics: Cartesian → joints (complex). Each trig function has two solutions. Multiple solutions may exist. Some configurations are unreachable (workspace limits). Singularities cause loss of DoF.
+  </div>
+  <h3>Method 1: Analytical IK (via Transform Matrix Matching)</h3>
+  <p>Equate the forward kinematics transform matrix with the desired pose matrix. Read off equations for each element:</p>
+  <div class="formula">
+    θ = α + β<br>
+    cos α = (x − cos(α+β)·l₂) / l₁<br>
+    sin α = (y − sin(α+β)·l₂) / l₁
+  </div>
+  <p>Constraint trick: fix one DoF (e.g., θ = 90° always → end-effector always points same direction) → makes equation system solvable.</p>
+  <h3>Method 2: Learn by Demonstration</h3>
+  <p>Manually move the robot arm to desired configuration. Read encoder values for all joints. Store as a named pose. Write a trajectory controller that moves to those stored values. Simple, reliable, no IK math required.</p>
+  <h3>Method 3: Numerical IK (IKPy, via URDF)</h3>
+  <pre><code># Load URDF and use numerical solver
+import ikpy.chain
+
+arm_chain = ikpy.chain.Chain.from_urdf_file("tiago.urdf",
+    active_links_mask=[False, True, True, True, True, True, True, False])
+
+target_pos = [0.5, 0.0, 0.4]   # desired end-effector position (x, y, z)
+joint_angles = arm_chain.inverse_kinematics(target_pos)
+print(joint_angles)             # angles for each joint</code></pre>
+  <p>Uses differential kinematics (Jacobian) iteratively to converge — that's why <code>max_iterations</code> is a parameter.</p>
+  <h3>Singularities</h3>
+  <p>Configurations where the arm loses a DoF — it cannot move in a certain direction. Example: fully extended arm — all joints collinear → can't extend further. Jacobian becomes rank-deficient (non-invertible) at singularities.</p>
+  <h3>IK Approach Comparison</h3>
+  <table class="ct">
+    <tr><th>Approach</th><th>Complexity</th><th>Generality</th><th>Best For</th></tr>
+    <tr><td>Learn by demonstration</td><td>Trivial</td><td>Fixed poses only</td><td>Final project — pre-taught poses</td></tr>
+    <tr><td>Reduced analytical IK</td><td>Medium (trig)</td><td>Specific scenario</td><td>Back-and-forth or up-down motion</td></tr>
+    <tr><td>IKPy / numerical</td><td>Easy (API call)</td><td>Any pose in workspace</td><td>General manipulation</td></tr>
+    <tr><td>Full analytical IK</td><td>Very hard</td><td>All configurations</td><td>UR5, specific arms only</td></tr>
+  </table>
+</div>
+
+<!-- S16 -->
+<div class="section" id="s16">
+  <div class="section-header"><div class="snum">16</div><h2>Final Project: TiagoLite Pick &amp; Place <span class="badge badge-lab">Lab</span></h2></div>
+  <h3>What You're Building</h3>
+  <p>A complete mobile manipulation stack: navigate to an object → pick it up → navigate to destination → place it down. Implemented using Behavior Trees in Webots' kitchen.wbt environment.</p>
+  <h3>Recommended Implementation Order</h3>
+  <ol class="steps">
+    <li>Implement A* on the C-space map from Part 2 → generate waypoints automatically</li>
+    <li>Use trajectory follower from Part 2 to drive along planned waypoints</li>
+    <li>Use Webots camera with object recognition to locate objects</li>
+    <li>Program arm poses via learn-by-demonstration (use Show Robot Window to find joint values)</li>
+    <li>Implement grasp sequence: position arm → open gripper → move to object → close gripper</li>
+    <li>Implement stow pose (arm retracted for safe navigation)</li>
+    <li>Implement place sequence: navigate to destination → position arm → open gripper</li>
+    <li>Wrap everything in Behavior Trees using pyTrees or custom classes</li>
+  </ol>
+
+  <h3>TiagoLite Arm Details</h3>
+  <ul class="plain">
+    <li>7 DoF in arm + torso lift joint</li>
+    <li>Use torso lift to set a fixed working height → simplifies IK to 2D problem</li>
+    <li>Show Robot Window: drag sliders to discover joint values for desired poses</li>
+    <li>Gripper: left and right finger joints — read encoder values to confirm grasp</li>
+    <li>URDF: right-click robot in Webots → export URDF for IKPy or PyBullet</li>
+  </ul>
+
+  <h3>Perception Setup</h3>
+  <pre><code># Webots camera object recognition
+camera = robot.getDevice('camera')
+camera.enable(timestep)
+camera.recognitionEnable(timestep)
+
+# In main loop:
+objects = camera.getRecognitionObjects()
+for obj in objects:
+    print(obj.getModel(), obj.getPosition())  # e.g. 'jam_jar' [0.3, 0.0, 0.8]</code></pre>
+
+  <h3>BT Structure for Pick &amp; Place</h3>
+  <div class="bt-row">
+    <span class="bt-node bt-dec">↻ Repeat</span>
+  </div>
+  <div class="bt-row" style="padding-left:1rem;">
+    <span class="bt-node bt-seq">→ Pick and Place</span>
+  </div>
+  <div class="bt-row" style="padding-left:2rem;">
+    <span class="bt-node bt-seq">→ Navigate to Object</span>
+    <span class="bt-node bt-seq">→ Pick Object</span>
+    <span class="bt-node bt-seq">→ Navigate to Destination</span>
+    <span class="bt-node bt-seq">→ Place Object</span>
+  </div>
+
+  <div class="box box-yellow">
+    <div class="box-title">Key Implementation Tips</div>
+    <ul class="plain">
+      <li>TiagoLite lidar: drop first and last 80 readings (shielded by body)</li>
+      <li>Lidar offset: add -0.203m to GPS/compass nodes in lidarSlot</li>
+      <li>arctan2 discontinuity: always wrap α to ±π</li>
+      <li>Arm encoder feedback: wait until joints reach target before declaring SUCCESS</li>
+      <li>Use Supervisor() not Robot() for marker visualization</li>
+      <li>Stow arm before navigating — avoids collisions with environment</li>
+    </ul>
+  </div>
+</div>
+
+<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.82rem;">
+  Robotics Part 3 Study Notes · Path Planning, Behavior Trees &amp; Kinematics
+</div>
+</div>
+</body>
+</html>
